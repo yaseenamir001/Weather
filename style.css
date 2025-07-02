@@ -1,0 +1,138 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+body {
+  height: 100vh;
+  background-color: black;
+  background-image: url("assets/kace-rodriguez-p3OzJuT_Dks-unsplash.jpg");
+  background-size: cover;
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+}
+.main-container {
+  height: 515px;
+  width: 390px;
+  border-radius: 16px;
+  padding: 30px;
+  background-color: rgba(37, 37, 37, 0.25);
+  box-shadow: 0 0 25px rgb(0, 0, 0);
+}
+.input-container {
+  position: relative;
+  margin-bottom: 30px;
+}
+.city-input {
+  font-size: 16px;
+  width: 100%;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 100px;
+  padding-right: 45px;
+  background-color: rgba(0, 0, 0, 0.14);
+}
+.city-input::placeholder {
+  color: #ffffff;
+  font-size: 16px;
+}
+.search-btn {
+  font-size: 18px;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  display: flex;
+  cursor: pointer;
+}
+.place-detail {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+.location-date-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.location-icon {
+  font-size: 24px;
+}
+.country-text {
+  font-weight: bold;
+  font-size: 18px;
+}
+.location {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.date-text {
+  font-weight: 400;
+  font-size: 16px;
+}
+.weather-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.weather-clouds {
+  height: 115px;
+  width: 115px;
+}
+.temperature {
+  font-weight: bold;
+  font-size: 24px;
+}
+.condition {
+  font-size: 20px;
+  font-weight: 400;
+}
+.drop-icon {
+  font-size: 30px;
+}
+.humidity-value {
+  font-size: 16px;
+}
+.weather {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.conditions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.forecast-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+}
+.forecast-container::-webkit-scrollbar {
+  display: none;
+}
+.forecast-item {
+  min-width: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+  transition: 0.3s background;
+}
+.forecast-item:hover {
+  background: rgb(255, 255, 255, 0.25);
+}
+.forecast-item-img {
+  height: 45px;
+  width: 45px;
+}
+.date-text-1 {
+  font-size: 14px;
+  font-weight: 600;
+}
