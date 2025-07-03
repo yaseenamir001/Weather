@@ -1,5 +1,6 @@
 const searchBtn = document.querySelector(".search-btn");
 const cityInput = document.querySelector(".city-input");
+const suggestionList = document.querySelector(".suggestions-list");
 const dateText = document.querySelector(".date-text");
 const countryText = document.querySelector(".country-text");
 const temperature = document.querySelector(".temperature");
@@ -10,6 +11,8 @@ const humidityValue = humidityValues[0];
 const windSpeed = humidityValues[1];
 const placeDetail = document.querySelector(".place-detail");
 const forecastContainer = document.querySelector(".forecast-container");
+const popup = document.querySelector(".popup-container");
+const closePopupBtn = document.querySelector(".close-btn");
 
 const iconMap = {
   clouds: "clouds.svg",
@@ -19,6 +22,14 @@ const iconMap = {
   drizzle: "drizzle.svg",
   snow: "snow.svg",
   mist: "mist.svg",
+  haze: "mist.svg",
+  fog: "mist.svg",
+  smoke: "mist.svg",
+  dust: "mist.svg",
+  sand: "mist.svg",
+  ash: "mist.svg",
+  squall: "thunderstorm.svg",
+  tornado: "thunderstorm.svg",
 };
 
 const apiKey = "d1688022cc8864d10bd3fca0ad3c3d83";
@@ -27,16 +38,15 @@ searchBtn.addEventListener("click", () => {
   const city = cityInput.value.trim();
 
   if (city === "") {
-    alert("Enter a city Name");
+    showPopup("Enter a city Name");
     return;
   }
+  selectedCity = city;
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
 
   fetch(url)
     .then((res) => {
-      const placeDetail = document.querySelector(".place-detail");
-
       if (!res.ok) throw new Error("City not found");
       return res.json();
     })
@@ -54,13 +64,15 @@ searchBtn.addEventListener("click", () => {
       humidityValue.textContent = `${data.main.humidity}%`;
       windSpeed.textContent = `${data.wind.speed} M/s`;
 
-      const weatherMain = data.weather[0].main.toLowerCase();
-      const icon = iconMap[weatherMain] || "clouds.svg";
-      weatherImg.src = `assets/weather/${icon}`;
+      // const weatherMain = data.weather[0].main.toLowerCase();
+      // const icon = iconMap[weatherMain] || "clouds.svg";
+      // weatherImg.src = `assets/weather/${icon}`;
+      const iconCode = data.weather[0].icon;
+      weatherImg.src = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
       placeDetail.style.display = "flex";
     })
     .catch((err) => {
-      alert("City not found!");
+      showPopup("City not found!");
     });
 
   fetch(forecastUrl)
@@ -99,4 +111,85 @@ searchBtn.addEventListener("click", () => {
     .catch((err) => {
       console.log("Forecast error:", err.message);
     });
+});
+cityInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    selectedCity = cityInput.value.trim();
+    searchBtn.click();
+    suggestionList.innerHTML = "";
+  }
+});
+
+cityInput.addEventListener("input", () => {
+  const suggest = cityInput.value.trim();
+  if (suggest.length >= 2) {
+    fetchSuggestions(suggest);
+  } else {
+    suggestionList.innerHTML = "";
+  }
+});
+
+function fetchSuggestions(suggest) {
+  if (suggest.toLowerCase() === selectedCity.toLowerCase()) {
+    suggestionList.innerHTML = "";
+    return;
+  }
+
+  const geoURL = `https://api.openweathermap.org/geo/1.0/direct?q=${suggest}&limit=5&appid=d1688022cc8864d10bd3fca0ad3c3d83`;
+
+  fetch(geoURL)
+    .then((res) => res.json())
+    .then((data) => {
+      const filtered = data.filter((city) =>
+        city.name.toLowerCase().includes(suggest.toLowerCase())
+      );
+      showSuggestions(filtered);
+    })
+    .catch((err) => {
+      console.error("Error fetching suggestions", err);
+    });
+}
+let selectedCity = "";
+
+function showSuggestions(cities) {
+  suggestionList.innerHTML = "";
+
+  cities.forEach((city) => {
+    const listItem = document.createElement("div");
+    listItem.textContent = `${city.name}, ${city.country}`;
+    listItem.classList.add("suggestion-item");
+
+    listItem.addEventListener("click", () => {
+      selectedCity = city.name;
+      cityInput.value = city.name;
+      suggestionList.innerHTML = "";
+      searchBtn.click();
+    });
+    suggestionList.appendChild(listItem);
+  });
+}
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".input-container")) {
+    suggestionList.innerHTML = "";
+
+    if (selectedCity) {
+      cityInput.value = selectedCity;
+    }
+  }
+});
+
+function showPopup(message) {
+  const popupMessage = document.querySelector(".popup-message");
+  popupMessage.textContent = message;
+  popup.classList.add("show");
+  suggestionList.innerHTML = "";
+  cityInput.blur();
+}
+
+function closePopup() {
+  popup.classList.remove("show");
+}
+closePopupBtn.addEventListener("click", closePopup);
+popup.addEventListener("click", (e) => {
+  if (e.target === popup) closePopup();
 });
